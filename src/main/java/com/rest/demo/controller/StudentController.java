@@ -27,11 +27,8 @@ public class StudentController {
 	@Autowired
 	private StudentDaoImplementation studentDaoImplementation;
 
-	@Autowired
-	public EntityManager entityManager;
-
 	public StudentController(EntityManager theManger) {
-		this.entityManager = theManger;
+
 	}
 
 	@GetMapping("/readAllStudents")
@@ -41,33 +38,34 @@ public class StudentController {
 	}
 
 	@PostMapping("/saveStudent")
-	public String saveStudent(@RequestBody Student s) {
+	public Student saveStudent(@RequestBody Student s) {
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Access-Control-Allow-Origin", "*"); // All
 		// Your logic to save the student
-		System.out.println(s);
-		studentDaoImplementation.saveStudent(s);
-		return "hello";
+		return studentDaoImplementation.saveStudent(s);
 	}
 
 	@GetMapping("/readStudent/{id}")
 	public ResponseEntity<Student> getStudentById(@PathVariable String id) {
 		Student student = studentDaoImplementation.getStudentById(Integer.parseInt(id));
-		return Objects.isNull(student) ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(HttpStatus.OK);
+		return Objects.isNull(student) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+				: new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	 @PutMapping("/updateStudent/{id}")
-	 public ResponseEntity<Student> updateStudent(@PathVariable String id, @RequestBody Student entity) throws Exception {
-	 	//TODO: process PUT request
-		 HttpHeaders headers = new HttpHeaders();
-	        headers.add("Access-Control-Allow-Origin", "*");
-	    Student updatedStudent = studentDaoImplementation.updateStudent(entity, Integer.parseInt(id));
-	 	return ResponseEntity.ok(updatedStudent);
-	 }
-	 
-	 @DeleteMapping("/deleteStudent")
-	 public ResponseEntity<String> deleteStudent(@RequestParam int id) {
-		 studentDaoImplementation.deleteStudent(id);
-		 return new ResponseEntity<String>("student deleted sucessfully", HttpStatus.OK);
-	 }
+	@PutMapping("/updateStudent/{id}")
+	public ResponseEntity<Student> updateStudent(@PathVariable String id, @RequestBody Student entity)
+			throws Exception {
+		// TODO: process PUT request
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Access-Control-Allow-Origin", "*");
+		Student updatedStudent = studentDaoImplementation.updateStudent(entity, Integer.parseInt(id));
+		return ResponseEntity.ok(updatedStudent);
+	}
+
+	@DeleteMapping("/deleteStudent")
+	public ResponseEntity<String> deleteStudent(@RequestParam int id) {
+		studentDaoImplementation.deleteStudent(id);
+		return new ResponseEntity<String>("student deleted sucessfully", HttpStatus.OK);
+	}
 }
